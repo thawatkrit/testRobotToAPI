@@ -1,0 +1,4 @@
+*** Variables ***
+${GLOBAL_API_URL}   http://127.0.0.1:5000
+${GLOBAL_ENDPOINT_USERS}    ${GLOBAL_API_URL}/users
+${GLOBAL_ENDPOINT_LOGIN}    ${GLOBAL_API_URL}/login
