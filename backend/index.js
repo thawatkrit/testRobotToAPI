@@ -10,21 +10,49 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Auten
+const adminLoginData = [
+  {username :"admin",password:"1234"},
+  {username :"admin01",password:"1234"},
+  {username :"admin02",password:"1234"},
+  {username :"admin03",password:"1234"}
+]
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
   console.log("req.body",req.body)
   if (!(username && password)) {
     return res.send(400);
   }
-  if (username == "admin" && password == "password") {
+  let resultCheckUsername = checkUsername(username,password)
+  console.log("resultCheckUsername",resultCheckUsername)
+  if (resultCheckUsername) {
     const access_token = jwtGenerate(username);
 
     res.json({ token: access_token });
-    res.sendStatus(200);
   } else {
-    return res.send(401);
+    res.status(401).json({ ERROR: "can not find" });
   }
 });
+
+const checkUsername = (username,password) => {
+  let result = false
+  if(username){
+    let user = adminLoginData.filter(arg=>arg.username == username)
+    console.log("user",user)
+    if(user&&user.length>0){
+        let passwordSuccess = user.filter(arg=>arg.password == password)
+        console.log("passwordSuccess",passwordSuccess)
+        if(passwordSuccess&&passwordSuccess.length>0){
+          result = true
+        }else{
+            result = false
+        }
+    }else{
+      result = false
+    }
+  }
+
+  return result;
+};
 
 const jwtGenerate = (username) => {
   const accessToken = jwt.sign({username:username}, process.env.ACCESS_TOKEN_SECRET, {
@@ -51,7 +79,9 @@ const jwtValidate = (req, res, next) => {
 };
 
 app.get("/users", jwtValidate, (req, res) => {
-  res.json(users);
+  console.log("req",req)
+  console.log("res",res)
+  res.status(200).json(users);
 });
 
 app.get("/users/:id", jwtValidate, (req, res) => {

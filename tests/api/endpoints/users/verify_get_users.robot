@@ -9,7 +9,6 @@ Suite Setup    Authorize
 
 Verify All Users
     Log To Console    \nSending Request To ${GLOBAL_ENDPOINT_USERS}\n
-    ${params}    Create Dictionary    filter=all
-    ${respone}    GET    url=${GLOBAL_ENDPOINT_USERS}    expected_status=200
-    ... headers=${GLOBAL_AUTH_HEADER} params=${params}
-    Validate Schema    inputJson=${respone.json()}   referenceSchemaPath=${GLOBAL_ENDPOINT_USERS}
+    ${response}  GET  url=${GLOBAL_ENDPOINT_USERS}  expected_status=200 
+    ...  headers=${GLOBAL_AUTH_HEADER}
+    Validate Schema    inputJson=${response.json()}    referenceSchemaPath=${GLOBAL_SCHEMA_USERS}

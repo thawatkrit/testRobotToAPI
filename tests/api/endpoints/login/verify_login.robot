@@ -8,8 +8,11 @@ Test Template       Users Data Sample
 
 *** Test Cases ***    username    password
 TC-001 Verify Login User 001    admin    1234
+
 TC-002 Verify Login User 002    admin01    1234
+
 TC-003 Verify Login User 003    admin02    1234
+
 TC-004 Verify Login User 004    admin03    1234
 
 
@@ -20,4 +23,5 @@ Users Data Sample
     Log To Console    \nRequest To ${GLOBAL_ENDPOINT_LOGIN}\n
     &{jsonBody}    Create Dictionary    username=${username}    password=${password}
     ${response}    POST    url=${GLOBAL_ENDPOINT_LOGIN}    json=&{jsonBody}    expected_status=200
-    Validate Json Schema    input_json=${response}    reference_schema_path=${GLOBAL_SCHEMA_LOGIN}
+     Log To Console    \nresponse To ${response.json()}\n
+    Validate Json Schema    input_json=${response.json()}    reference_schema_path=${GLOBAL_SCHEMA_LOGIN}

@@ -6,13 +6,16 @@ Library    Collections
 
 *** Keywords ***
 Authorize
+    Log To Console    \nGLOBAL_AUTH_SET ${GLOBAL_AUTH_SET}
     IF  not ${GLOBAL_AUTH_SET}
-        &{jsonBody}  Create Dictionary  username=admin  password=masterPass
+        &{jsonBody}  Create Dictionary  username=admin  password=1234
         ${response}  POST  url=${GLOBAL_ENDPOINT_LOGIN}  json=${jsonBody}  expected_status=200
         ${responseJson}  Set Variable  ${response.json()}
         ${token}  Get From Dictionary  ${responseJson}  token
+        Log To Console    \nAuthorize ${token}
         ${headers}  Create Dictionary  Authorization=Bearer ${token}
         Set Global Variable    ${GLOBAL_AUTH_HEADER}  ${headers}
+        Log To Console    \nGLOBAL_AUTH_HEADER ${GLOBAL_AUTH_HEADER} 
         Set Global Variable    ${GLOBAL_AUTH_SET}  ${True}
     END
 
