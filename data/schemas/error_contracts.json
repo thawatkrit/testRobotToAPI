@@ -1,0 +1,7 @@
+{
+    "type": "object",
+    "properties": {
+        "ERROR": {"type": "string", "const": "There are only 1 to 3 contracts"}
+    },
+    "required":["ERROR"]
+}

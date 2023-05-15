@@ -7,7 +7,7 @@ Suite Setup    Authorize
 
 *** Test Cases ***
 
-Verify All Users
+TC001 Verify All Users
     Log To Console    \nSending Request To ${GLOBAL_ENDPOINT_USERS}\n
     ${response}  GET  url=${GLOBAL_ENDPOINT_USERS}  expected_status=200 
     ...  headers=${GLOBAL_AUTH_HEADER}

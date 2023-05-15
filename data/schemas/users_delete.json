@@ -1,0 +1,7 @@
+{
+    "type": "object",
+    "properties": {
+        "MESSAGE": {"type": "string"}
+    },
+    "required":["MESSAGE"]
+}

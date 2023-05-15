@@ -21,8 +21,8 @@ Authorize
 
 Create New User
     [Arguments]  ${active}=${True}  ${city}=Testcity  ${contractsCurrency}=USD  ${contractsId}=33
-    ...  ${contractsPrice}=${9.99}  ${contractsType}=basic  ${email}=tom@miller.com  
-    ...  ${name}=miller  ${street}=1st street  ${surname}=tom  ${zip}=91343 
+    ...  ${contractsPrice}=${9.99}  ${contractsType}=basic  ${email}=test@gmail.com  
+    ...  ${name}=test_name  ${street}=1st street  ${surname}=test_surname  ${zip}=12345 
     ...  ${numberOfContracts}=${1}  ${expectedStatuscode}=201
     @{contracts}  Create List
     IF  ${numberOfContracts} > ${0}

@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const users = require("./data/users.json");
 const bodyParser = require("body-parser");
+const fs = require('fs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -79,8 +80,6 @@ const jwtValidate = (req, res, next) => {
 };
 
 app.get("/users", jwtValidate, (req, res) => {
-  console.log("req",req)
-  console.log("res",res)
   res.status(200).json(users);
 });
 
@@ -94,19 +93,65 @@ app.get("/users/:id", jwtValidate, (req, res) => {
   }
 });
 
-app.post("/users/:id", jwtValidate, (req, res) => {
-  const updateIndex = users.findIndex(
-    (user) => user.id === Number(req.params.id)
-  );
-  res.send(`Update user id: '${users[updateIndex].id}' completed.`);
+app.post("/users", jwtValidate, (req, res) => {
+  console.log("req",req.body)
+  if(req.body){
+    if(!(req.body.contracts &&req.body.contracts.length > 0 &&req.body.contracts.length < 4) ){
+      res.status(400).send({"ERROR":"There are only 1 to 3 contracts"});
+      return
+    }
+    if(!verifyCreateUser(req.body)){
+      res.status(400).send({"ERROR":"Data not in the right format"});
+      return
+    }
+    let createId = Math.floor(Math.random() * 9999) + 1;
+    let createData = {id:createId,
+      ...req.body
+    }
+    let allData = users
+    allData.users.push(createData)
+    fs.writeFile('./data/users.json', JSON.stringify(allData), 'utf8', function(err) {
+      if (err) throw err;
+      console.log('complete');
+      });
+    res.status(201).send({"ID":createId});
+  }else{
+    res.status(400).send({"ERROR":"not find data in body"});
+  }
 });
 
+const verifyCreateUser = (data) => {
+  try {
+    if('name' in data && 'zip' in data && 'street' in data) return true
+    return false
+  } catch (error) {
+    return res.sendStatus(400);
+  }
+};
+
+
 app.delete("/users/:id", jwtValidate, (req, res) => {
+  let isNumber = /^\d+$/.test(req.params.id);
+  if(!isNumber){
+    res.status(400).send({"ERROR":"id is not number"});
+    return
+  }
   const deletedIndex = users.users.findIndex(
     (user) => user.id === Number(req.params.id)
   );
-  res.send({'MESSAGE':'OK'});
-  res.sendStatus(200);
+  if(deletedIndex!=-1){
+    let allData = users
+    let currentDataDelete = allData.users[deletedIndex]
+    allData.users.splice(deletedIndex, 1);
+    fs.writeFile('./data/users.json', JSON.stringify(allData), 'utf8', function(err) {
+      if (err) throw err;
+      console.log('complete');
+      });
+    res.status(200).send({'MESSAGE':'OK'});
+  }else{
+    res.status(404).send({"ERROR":"not found"});
+    return
+  }
 });
 
 app.listen(port, () => {
